@@ -8,7 +8,6 @@
 
 
 //?  (Clase Constructora) Lista de IDs
-const HTMLArticulosEnCarrito = document.getElementById("carrito-lista");
 
 class Carrito {
   constructor() {
@@ -18,44 +17,36 @@ class Carrito {
   }
 
   //Agrega un nuevo articulo (ID) al carrito ('idsArticulosEnCarrito'(ARRAY de IDs))
-  sumarUnidadArticulo(idArticulo) {
-    idArticulo = parseInt(idArticulo);
-
-    //
-    if (this.idsArticulosEnCarrito.indexOf(idArticulo) !== -1) {
+  sumarUnidadArticulo( idArticulo ) {
+    idArticulo = parseInt( idArticulo );
+    if( this.idsArticulosEnCarrito.indexOf( idArticulo ) !== -1 ) {
       this.cantidadesDeCadaArticulo[idArticulo] = this.cantidadesDeCadaArticulo[idArticulo] + 1;
-    } else {
-      this.idsArticulosEnCarrito.push(idArticulo);
-      this.cantidadesDeCadaArticulo[idArticulo] = 1;
     }
+    else {
+      this.idsArticulosEnCarrito.push( idArticulo );
+      this.cantidadesDeCadaArticulo[idArticulo] = 1;
+    };
     this.renderCarrito();
   }
 
   //Restar una unidad a un articulo del carrito.
   restarUnidadArticulo(idArticulo) {
     idArticulo = parseInt(idArticulo);
-
-    //
     if( this.idsArticulosEnCarrito.indexOf( idArticulo !== -1 )) {
       this.cantidadesDeCadaArticulo[idArticulo] = this.cantidadesDeCadaArticulo[idArticulo] - 1;
     }
     else {
       return;
-    }
+    };
     this.renderCarrito();
   }
 
   //Quitar todas las unidades de un articulo del carrito.
   quitarArticulo( idArticulo ) {
-    
-    idArticulo = parseInt(idArticulo);
-    
-    this.idsArticulosEnCarrito = this.idsArticulosEnCarrito.filter((id) => id !== idArticulo);
-
-    delete this.cantidadesDeCadaArticulo[idArticulo]
-
-    this.renderCarrito()
-
+    idArticulo = parseInt( idArticulo );
+    this.idsArticulosEnCarrito = this.idsArticulosEnCarrito.filter(( id ) => id !== idArticulo);
+    delete this.cantidadesDeCadaArticulo[idArticulo];
+    this.renderCarrito();
   }
 
   //Devuelve los articulos (IDs) que estan guardados en el carrito ('idsArticulosEnCarrito').
@@ -63,48 +54,52 @@ class Carrito {
     return this.idsArticulosEnCarrito;
   }
 
-  calcularPrecioTotalArticulo(articulo){
+  //Calcula el precio total de un articulo en el carrito teniendo en cuenta la cantidad seleccionada.
+  calcularPrecioTotalArticulo( articulo ) {
     return articulo.precio * this.cantidadesDeCadaArticulo[articulo.id];
-
   }
 
   //Crea en el HTML las etiquetas que muestran los articulos que se agregan al carrito.
   renderCarrito() {
-   
     this.calcularPrecioFinalDeCompra()
+
+    const HTMLArticulosEnCarrito = document.getElementById( "carrito-lista" );
     const datos = this.consultarDatosArticulo();
+
     HTMLArticulosEnCarrito.innerHTML = "";
-    datos.forEach((articulo) => {
+    datos.forEach(( articulo ) => {
       HTMLArticulosEnCarrito.innerHTML += `
-        <li class="carrito-item"><span class="borrar-carrito-item"  onClick="carrito.quitarArticulo(${articulo.id})">x</span> ${articulo.nombre} $${carrito.calcularPrecioTotalArticulo(articulo)}<p class="carrito-item-cantidad">Cantidad total: <span onClick="carrito.sumarUnidadArticulo(${articulo.id})"  class="sumar-unidad-item-carrito">+</span> ${carrito.cantidadesDeCadaArticulo[articulo.id]} 
-        <span class="restar-unidad-item-carrito" onClick="carrito.restarUnidadArticulo(${articulo.id})">-</span></p></li>
-
-
-        ${carrito.precioFinalDeCompra}
-        `;
+        <li class="carrito-item">
+          <p>
+            <span class="borrar-carrito-item" onClick="carrito.quitarArticulo(${articulo.id})">x</span> ${articulo.nombre} $${carrito.calcularPrecioTotalArticulo(articulo)}</p>
+          <p class="carrito-item-cantidad">
+            Cantidad total: <span class="restar-unidad-item-carrito" onClick="carrito.restarUnidadArticulo(${articulo.id})">-</span> ${carrito.cantidadesDeCadaArticulo[articulo.id]} <span onClick="carrito.sumarUnidadArticulo(${articulo.id})" class="sumar-unidad-item-carrito">+</span>
+          </p>
+        </li>
+      `;
     });
+
+    document.getElementById("precio-final-compra").innerText = `$${this.precioFinalDeCompra}`;
   }
 
-  calcularPrecioFinalDeCompra() {
-    const datos  =  this.consultarDatosArticulo();
 
+  calcularPrecioFinalDeCompra() {
+    const datos = this.consultarDatosArticulo();
     this.precioFinalDeCompra = 0
 
-    datos.forEach((articulo) => {
+    datos.forEach(( articulo ) => {
       this.precioFinalDeCompra = this.precioFinalDeCompra + articulo.precio * this.cantidadesDeCadaArticulo[articulo.id];
      })
   }
 
-  aplicarCuponDescuento(){
-    this.precioFinalDeCompra = this.precioFinalDeCompra * 0.2
+  aplicarCuponDescuento() {
+    this.precioFinalDeCompra = this.precioFinalDeCompra * 0.2;
   }
 
   //Busca y devuelve los datos de los articulos usando los IDs que estan en el carrito ('idsArticulosEnCarrito').
   consultarDatosArticulo() {
-    return this.idsArticulosEnCarrito.map((idArticulo) => {
-      const articulo = listaArticulos.find(
-        (articulo) => articulo.id === parseInt(idArticulo)
-      );
+    return this.idsArticulosEnCarrito.map(( idArticulo ) => {
+      const articulo = listaArticulos.find(( articulo ) => articulo.id === parseInt( idArticulo ));
       return articulo;
     });
   }
@@ -117,9 +112,8 @@ class Carrito {
       this.idsArticulosEnCarrito = [];
       this.cantidadesDeCadaArticulo = {};
     };
-    
   }
-}
+};
 
 
 //? Creando el carrito
@@ -144,7 +138,3 @@ for (let i = 0; i < listaArticulos.length; i++) {
 //? Evento en el boton Limpiar todo el carrito (Borrar Todo)
 
 document.getElementById("btn-quitar-todo").addEventListener("click", carrito.limpiarCarrito);
-
-
-
-
