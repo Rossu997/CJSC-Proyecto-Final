@@ -7,7 +7,7 @@
 //! Data Base
 
 
-let dataBase = [
+const dataBase = [
     {
         'id': 1,
         'imagenURL': 'https://valenziana.com/wp-content/uploads/2021/07/salta-nat-urb-scaled.jpg',
@@ -39,22 +39,3 @@ let dataBase = [
 ];
 
 localStorage.setItem('articulos', JSON.stringify(dataBase));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
