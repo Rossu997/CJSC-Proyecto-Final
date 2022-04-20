@@ -106,12 +106,22 @@ class Carrito {
 
   //Borra todo el contenido del carrito ('idsArticulosEnCarrito', 'cantidadesDeCadaArticulo' y HTML)
   limpiarCarrito() {
-
-    if( confirm( "Vas a borrar todos tus artículos del carrito. ¿Estás seguro?" )){
-      HTMLArticulosEnCarrito.innerHTML = "";
-      this.idsArticulosEnCarrito = [];
-      this.cantidadesDeCadaArticulo = {};
-    };
+    swal({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this imaginary file!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        swal("Poof! Your imaginary file has been deleted!", {
+          icon: "success",
+        });
+      } else {
+        swal("Your imaginary file is safe!");
+      }
+    });
   }
 };
 
@@ -134,6 +144,7 @@ for (let i = 0; i < listaArticulos.length; i++) {
         <button id=${listaArticulos[i].id} class="btn-add" type="button" onClick="carrito.sumarUnidadArticulo(${listaArticulos[i].id})"  >¡AGREGAR!</button>
       </div>`;
 }
+
 
 //? Evento en el boton Limpiar todo el carrito (Borrar Todo)
 
