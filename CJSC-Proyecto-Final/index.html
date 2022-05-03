@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ecommerce Desafío Final</title>
+
+    <!-- LLAMADO DE LIBRERIAS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    <!-- LLAMADO DE FUENTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+
+    <!-- LLAMADO DE ESTILOS -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <h1 id="logo"><a href="#">LOGO 😂</a></h1>
+            <ul class="nav-lista">
+                <li><a class="nav-item" href="#">Muebles</a></li>
+                <li><a class="nav-item" href="#">Nosotros</a></li>
+                <li><a class="nav-item" href="#">Contacto</a></li>
+            </ul>
+        </nav>
+        <article class="hero-image">
+            <img src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/posters-in-cozy-apartment-interior-royalty-free-image-943910360-1534189931.jpg"
+                alt="Bajomesada con cuadros.">
+        </article>
+        <main class="main-div">
+            <aside class="aside-div">
+                <h1>CARRITO 🛒</h1>
+                <h4 id="carrito-sub">Carrito vacío. ¡Seleccioná productos!</h4>
+                <ul id="carrito-lista"></ul>
+                <div id="container-precio-final"></div>
+            </aside>
+
+            <div id="container-tarjetas" class="container-tarjetas">
+                <h1>NUESTROS PRODUCTOS 😎</h1>
+            </div>
+        </main>
+    </div>
+
+
+    <!-- TEMPLATES -->
+    <template id="template-tarjeta">
+        <div class="tarjeta-normal">
+            <img src="" alt="">
+            <h3></h3>
+            <p></p>
+            <p class="tarjeta-precio">$ <span></span></p>
+            <button class="btn-add" type="button">agregar</button>
+        </div>
+    </template>
+
+    <template id="template-carrito">
+        <li class="carrito-item">
+            <p>
+                <span id="carrito-borrar-item" class="x">x</span>
+                <span id="carrito-nombre-item">Nombre del producto</span>
+            </p>
+            <div>
+                <p>
+                    <span class="ml-1">$</span>
+                    <span id="carrito-precio-total-item" class="mr-1">Precio * Cantidad del producto</span>
+                </p>
+                <p>
+                    <span id="carrito-restar-item" class="-">-</span>
+                    <span id="carrito-cantidad-item">Cantidad del producto</span>
+                    <span id="carrito-sumar-item" class="+">+</span>
+                </p>
+            </div>
+
+        </li>
+    </template>
+
+    <template id="template-precio-final">
+        <div class="carrito-item">
+            <h4 id="carrito-sub">TOTAL:</h4>
+            <div class="precio-final-compra">
+                <h4 class="ml-1">$</h4>
+                <h4 id="precio-final-compra">$0</h4>
+            </div>
+
+        </div>
+        <button id="btn-finalizar" class="btn-finalizar" type="button">FINALIZAR LA COMPRA</button>
+        <button id="btn-quitar-todo" class="btn-quitar-todo" type="button">
+            QUITAR TODOS LOS ARTÍCULOS DEL CARRITO
+        </button>
+    </template>
+
+
+    <!-- JQUERY -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- SWEET ALERT -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <!-- TOASTIFY -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- LLAMADO DE SCRIPTS -->
+    <script src="random-color.js"></script>
+    <script src="main.js"></script>
+
+</body>
+
+</html>
