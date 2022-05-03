@@ -54,7 +54,10 @@ const templateCarrito = document.getElementById("template-carrito").content
 const containerCarrito = document.getElementById("carrito-lista")
 const templatePrecioFinal = document.getElementById("template-precio-final").content
 const containerPrecioFinal = document.getElementById("container-precio-final")
+const templateFinalizar = document.getElementById("template-finalizar").content
+const containerFinalizar = document.getElementById("container-finalizar")
 const carritoSub = document.getElementById("carrito-sub")
+const bodyTag = document.querySelector("bodyTag")
 
 const quitarTodo = document.getElementById("btn-quitar-todo")
 
@@ -63,12 +66,14 @@ const quitarTodo = document.getElementById("btn-quitar-todo")
  * EVENTOS EN EL DOM
  */
 
+//Agregar un producto al carrito
 const addProducto = containerTarjetas.addEventListener("click", e => {
 	e.target.classList.contains("btn-add") && setProducto(e.target.parentElement)
 	e.stopPropagation()
 })
 
 
+//Modificar los productos del carrito
 const modProductosCarrito = containerCarrito.addEventListener("click", e => {
 	let id = e.target.dataset.id
 	switch (e.target.classList.value) {
@@ -90,9 +95,42 @@ const modProductosCarrito = containerCarrito.addEventListener("click", e => {
 			carrito[id].cantidad = carrito[id].cantidad + 1
 			break
 	}
+	e.stopPropagation()
 	printCarrito()
 })
 
+
+//Total y finalizar la compra
+const finalizarCompra = containerPrecioFinal.addEventListener("click", e => {
+	if (e.target.classList.contains("btn-finalizar")) {
+
+		templateFinalizar.querySelector("h4").textContent = "$chorrocientosmil morlacos"
+		bodyTag.style.overflow = "hidden"
+
+		const clone = templateFinalizar.cloneNode(true)
+		fragment.appendChild(clone)
+		containerFinalizar.appendChild(fragment)
+	}
+	e.stopPropagation()
+})
+
+const salirFinalizar1 = containerFinalizar.addEventListener("click", e => {
+	if (e.target.classList.contains("click-fuera")) {
+
+		containerFinalizar.textContent = ""
+		bodyTag.style.overflow = "auto"
+	}
+	e.stopPropagation()
+})
+
+const salirFinalizar2 = document.addEventListener("keydown", e => {
+	if (e.key === "Escape") {
+
+		containerFinalizar.textContent = ""
+		bodyTag.style.overflow = "auto"
+	}
+	e.stopPropagation()
+})
 
 
 /**
@@ -145,41 +183,33 @@ const printCarrito = () => {
 		fragment.appendChild(clone)
 	})
 	containerCarrito.appendChild(fragment)
+
 	estadoCarrito(Object.values(carrito).length)
-	finalCarrito(Object.values(carrito).length)
+	totalCarrito(Object.values(carrito).length)
 }
 
 
 //Subtitulo con estado del carrito
-const estadoCarrito = (lenght) => {
-	if (lenght === 0) {
-		carritoSub.textContent = "Carrito vacío. ¡Seleccioná productos!"
-	}
-	else {
-		carritoSub.textContent = "Productos agregados:"
-	}
+const estadoCarrito = lenght => {
+	lenght === 0
+		? carritoSub.textContent = "Carrito vacío. ¡Seleccioná productos!"
+		: carritoSub.textContent = "Productos agregados:"
 }
 
 
-//Total y finalizar compra
-const finalCarrito = (lenght) => {
+//Total carrito con texto que cambia dependiendo el contenido
+const totalCarrito = lenght => {
+	containerPrecioFinal.textContent = ""
 
-	if (lenght === 0) {
-		containerPrecioFinal.textContent = ""
-	}
-
-	else {
+	if (lenght !== 0) {
 		const precioFinal = Object.values(carrito).reduce((acc, { cantidad, precio }) => acc + (cantidad * precio), 0)
 		templatePrecioFinal.getElementById("precio-final-compra").textContent = precioFinal
 
 		const clone = templatePrecioFinal.cloneNode(true)
 		fragment.appendChild(clone)
+		containerPrecioFinal.appendChild(fragment)
 	}
-	containerCarrito.appendChild(fragment)
 }
-
-
-
 
 
 //Borra todo el contenido del carrito
@@ -204,8 +234,8 @@ const wipeCarrito = () => {
 //Aviso que se elimino el producto del carrito
 const toastProductoEliminado = producto => {
 	Toastify({
-		text: `${producto} eliminado del carrito 🥵👌`,
-		duration: 3000,
+		text: `${producto} eliminado del carrito 😔👌`,
+		duration: 2000,
 		gravity: "top",
 		position: "right",
 		stopOnFocus: true,

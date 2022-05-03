@@ -23,6 +23,7 @@
 
 <body>
     <div class="container">
+        <div id="container-finalizar"></div>
         <nav class="navbar">
             <h1 id="logo"><a href="#">LOGO 😂</a></h1>
             <ul class="nav-lista">
@@ -83,18 +84,34 @@
     </template>
 
     <template id="template-precio-final">
-        <div class="carrito-item">
+        <div class="carrito-item mt-2">
             <h4 id="carrito-sub">TOTAL:</h4>
             <div class="precio-final-compra">
                 <h4 class="ml-1">$</h4>
                 <h4 id="precio-final-compra">$0</h4>
             </div>
-
         </div>
         <button id="btn-finalizar" class="btn-finalizar" type="button">FINALIZAR LA COMPRA</button>
         <button id="btn-quitar-todo" class="btn-quitar-todo" type="button">
             QUITAR TODOS LOS ARTÍCULOS DEL CARRITO
         </button>
+    </template>
+
+    <template id="template-finalizar">
+        <div id="finalizar-bg" class="click-fuera">
+            <article id="finalizar-card">
+                <h1 class="meme">🤑</h1>
+                <h1>El precio total de la compra</h1>
+                <h4>$3000</h4>
+                <div id="descuentovich" class="mt-2">
+                    <label for="codigo-descuento-ingresado" id="codigo-descuento">Ingresa un codigo de descuento</label>
+                    <input type="text" placeholder="INVIERNO2022" id="codigo-descuento-ingresado"
+                        name="codigo-descuento-ingresado">
+                    <button id="aplicar-descuento" type="button">APLICAR DESCUENTO</button>
+                </div>
+                <button id="btn-pagar" class="btn-finalizar" type="button">PROCEDER A PAGAR</button>
+            </article>
+        </div>
     </template>
 
 
