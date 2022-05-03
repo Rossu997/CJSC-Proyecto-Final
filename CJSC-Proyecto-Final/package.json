@@ -1,0 +1,19 @@
+{
+  "name": "cjsc-proyecto-final",
+  "version": "1.0.0",
+  "description": "Repositorio donde voy actualizando el proyecto final del curso con las nuevas implementaciones y estancias de entrega.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rossu997/CJSC-Proyecto-Final.git"
+  },
+  "author": "ossukov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rossu997/CJSC-Proyecto-Final/issues"
+  },
+  "homepage": "https://github.com/Rossu997/CJSC-Proyecto-Final#readme"
+}
