@@ -95,10 +95,11 @@ span {
 }
 
 .btn-quitar-todo {
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   color: rgba(0, 0, 0, 0.5);
   border-width: 0;
   text-decoration: none;
+  font-weight: 400;
   box-shadow: none;
   background-color: white;
   cursor: pointer;
@@ -238,7 +239,24 @@ span {
   scroll-behavior: unset;
 }
 
-#descuentovich {
+.bg-amarillo {
   background-color: rgb(255, 225, 28);
   padding: 0.5rem 1rem;
+}
+
+.envios-info {
+  background-color: rgb(255, 225, 28);
+  padding: 0.5rem 1rem;
+  text-align: center;
+}
+
+.envio-div {
+  font-weight: 200;
+  color: black;
+  font-size: 0.8rem;
+}
+
+.center {
+  display: block;
+  text-align: center;
 }

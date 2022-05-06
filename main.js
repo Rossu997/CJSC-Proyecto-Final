@@ -57,7 +57,8 @@ const containerPrecioFinal = document.getElementById("container-precio-final")
 const templateFinalizar = document.getElementById("template-finalizar").content
 const containerFinalizar = document.getElementById("container-finalizar")
 const carritoSub = document.getElementById("carrito-sub")
-const bodyTag = document.querySelector("bodyTag")
+const envioInfo = document.getElementById("envios-info")
+const bodyTag = document.querySelector("body")
 
 const quitarTodo = document.getElementById("btn-quitar-todo")
 
@@ -110,24 +111,10 @@ const finalizarCompra = containerPrecioFinal.addEventListener("click", e => {
 		const clone = templateFinalizar.cloneNode(true)
 		fragment.appendChild(clone)
 		containerFinalizar.appendChild(fragment)
-	}
-	e.stopPropagation()
-})
 
-const salirFinalizar1 = containerFinalizar.addEventListener("click", e => {
-	if (e.target.classList.contains("click-fuera")) {
-
-		containerFinalizar.textContent = ""
-		bodyTag.style.overflow = "auto"
-	}
-	e.stopPropagation()
-})
-
-const salirFinalizar2 = document.addEventListener("keydown", e => {
-	if (e.key === "Escape") {
-
-		containerFinalizar.textContent = ""
-		bodyTag.style.overflow = "auto"
+		const auxBg = document.getElementById("finalizar-bg")
+		auxBg.addEventListener("click", e => e.target.classList.contains("click-fuera") && salirFinalizar())
+		document.addEventListener("keydown", e => e.key === "Escape" && salirFinalizar())
 	}
 	e.stopPropagation()
 })
@@ -189,11 +176,20 @@ const printCarrito = () => {
 }
 
 
-//Subtitulo con estado del carrito
+//Cambia información según el estado del carrito
 const estadoCarrito = lenght => {
-	lenght === 0
-		? carritoSub.textContent = "Carrito vacío. ¡Seleccioná productos!"
-		: carritoSub.textContent = "Productos agregados:"
+
+	if (lenght === 0) {
+		carritoSub.textContent = "Carrito vacío. ¡Seleccioná productos!"
+		envioInfo.innerHTML = `	<p>¡Envíos gratis a todo el país!</p>
+                    				<p>A partir de $20.000</p>`
+		envioInfo.classList.add("envios-info")
+	}
+	else {
+		carritoSub.textContent = "Productos agregados:"
+		envioInfo.textContent = ""
+		envioInfo.classList.remove("envios-info")
+	}
 }
 
 
@@ -202,14 +198,56 @@ const totalCarrito = lenght => {
 	containerPrecioFinal.textContent = ""
 
 	if (lenght !== 0) {
+
 		const precioFinal = Object.values(carrito).reduce((acc, { cantidad, precio }) => acc + (cantidad * precio), 0)
 		templatePrecioFinal.getElementById("precio-final-compra").textContent = precioFinal
+
+		calcularEnvio(precioFinal)
+
+		templatePrecioFinal.getElementById("precio-envio").innerHTML = precioEnvio
+		if (precioEnvio === "ENVÍO GRATIS") {
+			templatePrecioFinal.querySelector(".signo-peso").textContent = ""
+			templatePrecioFinal.querySelector(".envio-div").classList.add("bg-amarillo")
+		} else {
+			templatePrecioFinal.querySelector(".signo-peso").textContent = "$"
+			templatePrecioFinal.querySelector(".envio-div").classList.remove("bg-amarillo")
+		}
 
 		const clone = templatePrecioFinal.cloneNode(true)
 		fragment.appendChild(clone)
 		containerPrecioFinal.appendChild(fragment)
+
+		const quitarTodo = document.getElementById("btn-quitar-todo")
+		quitarTodo.addEventListener("click", e => wipeCarrito(e))
+	}
+
+}
+
+//Calcula el precio del envío y cuánto falta para que sea gratis
+const calcularEnvio = (precioFinal) => {
+	const enviosInfoIn = templatePrecioFinal.getElementById("envios-info-in")
+
+	if (precioFinal >= 20000) {
+		precioEnvio = "ENVÍO GRATIS 🤑"
+		enviosInfoIn.textContent = ""
+		enviosInfoIn.classList.remove("envios-info")
+	} else if (precioFinal > 15000) {
+		precioEnvio = 2000
+		enviosInfoIn.innerHTML = `<p>¡Solo faltan $${20000 - precioFinal} para tu envío gratis! 😍</p>`
+		enviosInfoIn.classList.add("envios-info")
+	} else if (precioFinal > 10000) {
+		precioEnvio = 1500
+		enviosInfoIn.innerHTML = `<p>Agregando $${20000 - precioFinal} tu envío es sin costo 😏</p>`
+	} else if (precioFinal > 5000) {
+		precioEnvio = 1000
+		enviosInfoIn.innerHTML = `<p>¡Necesitar sumar $${20000 - precioFinal} y te regalamos el envío hasta tu casa! 🙄</p>`
+	} else {
+		precioEnvio = 500
+		enviosInfoIn.innerHTML = `<p>Todavía te faltan $${20000 - precioFinal} para tu envío bonificado 😪</p>`
+		enviosInfoIn.classList.add("envios-info")
 	}
 }
+
 
 
 //Borra todo el contenido del carrito
@@ -223,9 +261,11 @@ const wipeCarrito = () => {
 		.then((willDelete) => {
 			if (willDelete) {
 				swal("Productos eliminados", {
-					icon: "success"
+					icon: "success",
+					duration: 2000
 				});
 				carrito = {}
+				printCarrito()
 			}
 		});
 }
@@ -249,3 +289,8 @@ const toastProductoEliminado = producto => {
 	}).showToast();
 }
 
+//Salir del popup final
+const salirFinalizar = () => {
+	containerFinalizar.textContent = ""
+	bodyTag.style.overflow = "auto"
+}

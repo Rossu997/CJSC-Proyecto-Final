@@ -42,6 +42,10 @@
                 <h4 id="carrito-sub">Carrito vacío. ¡Seleccioná productos!</h4>
                 <ul id="carrito-lista"></ul>
                 <div id="container-precio-final"></div>
+                <div id="envios-info" class="envios-info mt-2">
+                    <p>¡Envíos gratis a todo el país!</p>
+                    <p>A partir de $20.000</p>
+                </div>
             </aside>
 
             <div id="container-tarjetas" class="container-tarjetas">
@@ -84,26 +88,42 @@
     </template>
 
     <template id="template-precio-final">
-        <div class="carrito-item mt-2">
-            <h4 id="carrito-sub">TOTAL:</h4>
-            <div class="precio-final-compra">
-                <h4 class="ml-1">$</h4>
-                <h4 id="precio-final-compra">$0</h4>
+        <div class="mt-2">
+            <div class="carrito-item">
+                <h4 id="carrito-sub">TOTAL:</h4>
+                <div class="precio-final-compra">
+                    <h4 class="ml-1">$</h4>
+                    <h4 id="precio-final-compra">$0</h4>
+                </div>
+            </div>
+            <div class="carrito-item envio-div">
+                <h4 id="envio">ENVÍO:</h4>
+                <div class="precio-final-envio">
+                    <h4 class="signo-peso">$</h4>
+                    <h4 id="precio-envio">100</h4>
+                </div>
+            </div>
+            <div id="envios-info-in" class="envios-info mt-2">
+                <p>¡Envíos gratis a todo el país!</p>
+                <p>A partir de $20.000</p>
             </div>
         </div>
-        <button id="btn-finalizar" class="btn-finalizar" type="button">FINALIZAR LA COMPRA</button>
-        <button id="btn-quitar-todo" class="btn-quitar-todo" type="button">
-            QUITAR TODOS LOS ARTÍCULOS DEL CARRITO
-        </button>
+        <div class="center">
+            <button id="btn-finalizar" class="btn-finalizar" type="button">FINALIZAR LA COMPRA</button>
+            <button id="btn-quitar-todo" class="btn-quitar-todo" type="button">
+                <p>QUITAR TODOS LOS ARTÍCULOS DEL CARRITO</p>
+            </button>
+        </div>
+
     </template>
 
     <template id="template-finalizar">
         <div id="finalizar-bg" class="click-fuera">
             <article id="finalizar-card">
-                <h1 class="meme">🤑</h1>
+                <h1 class="meme">💰</h1>
                 <h1>El precio total de la compra</h1>
                 <h4>$3000</h4>
-                <div id="descuentovich" class="mt-2">
+                <div id="descuentovich" class="mt-2 bg-amarillo">
                     <label for="codigo-descuento-ingresado" id="codigo-descuento">Ingresa un codigo de descuento</label>
                     <input type="text" placeholder="INVIERNO2022" id="codigo-descuento-ingresado"
                         name="codigo-descuento-ingresado">
