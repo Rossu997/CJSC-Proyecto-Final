@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Alfa Slab One', cursive;
+  font-family: 'Prompt', sans-serif;
   list-style: none;
 }
 
@@ -17,9 +17,19 @@ h1 {
 }
 
 p,
-li,
 span {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: 'Work Sans', sans-serif;
+}
+
+button,
+input[type="submit"],
+input[type="reset"] {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
 }
 
 .container {
@@ -28,25 +38,26 @@ span {
   padding: 4rem 2rem;
 }
 
+#logo a {
+  color: black;
+  text-decoration: none;
+  font-weight: 900;
+}
+
 .navbar {
   width: 95vw;
   max-width: 1500px;
   display: flex;
-  flex-flow: row wrap;
   justify-content: space-between;
+  align-items: baseline;
 }
 
 .nav-lista {
   display: flex;
-  flex-flow: row nowrap;
   justify-content: space-between;
   width: 20rem;
-  padding-top: 2rem;
-}
-
-#logo a {
-  color: black;
-  text-decoration: none;
+  /* 
+  padding-top: 2rem; */
 }
 
 .nav-item {
@@ -80,6 +91,12 @@ span {
   padding-right: 1.6rem;
 }
 
+.aside-div section {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 2rem;
+}
+
 .btn-finalizar {
   margin: 2rem 0 0.8rem 0;
   background-color: white;
@@ -110,16 +127,22 @@ span {
   color: black;
 }
 
-.container-tarjetas {
+.container-productos {
   width: 70%;
+  display: block;
+  flex-flow: column nowrap;
+}
+
+#nav-productos {
+  background-color: #ffe11c;
+  margin-bottom: 2rem;
+  padding: 0.5rem 1rem;
+}
+
+.container-tarjetas {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-}
-
-.container-tarjetas h1 {
-  width: 100%;
-  margin-bottom: 1rem;
 }
 
 .tarjeta-normal {
@@ -149,9 +172,7 @@ span {
   background-color: black;
   color: white;
   text-decoration: none;
-  font-weight: 100;
   font-size: 1rem;
-  letter-spacing: 2px;
   border: none;
   padding: 0.5rem 1.5rem;
   text-align: center;
@@ -162,10 +183,6 @@ span {
 
 .btn-add:hover {
   box-shadow: 0px 5px 10px 0 rgba(0, 0, 0, 0.200);
-}
-
-#carrito-sub {
-  font-weight: 100;
 }
 
 .carrito-item,
@@ -209,7 +226,6 @@ span {
   font-size: 0.8rem;
 }
 
-
 .meme {
   font-size: 6rem;
 }
@@ -217,6 +233,7 @@ span {
 #finalizar-bg {
   background-color: rgba(255, 255, 255, 0.800);
   position: fixed;
+  z-index: 1;
   top: 0;
   bottom: 0;
   left: 0;
@@ -232,20 +249,20 @@ span {
   background-color: white;
   color: black;
   border: 2px black solid;
-  font-weight: 100;
-  letter-spacing: 2px;
   border-radius: 5px;
   padding: 2rem;
   scroll-behavior: unset;
 }
 
 .bg-amarillo {
-  background-color: rgb(255, 225, 28);
+  background-color: #ffe11c;
+  box-sizing: border-box;
   padding: 0.5rem 1rem;
 }
 
 .envios-info {
-  background-color: rgb(255, 225, 28);
+  background-color: #ffe11c;
+  box-sizing: border-box;
   padding: 0.5rem 1rem;
   text-align: center;
 }
@@ -259,4 +276,35 @@ span {
 .center {
   display: block;
   text-align: center;
+}
+
+
+#pelotita-cantidad-productos {
+  background-color: #ffe11c;
+  box-sizing: border-box;
+  color: black;
+  border-radius: 100%;
+  font-size: 0.7rem;
+  padding: 5px 9px;
+  text-align: center;
+}
+
+.btn-fav {
+  border: none;
+  color: #b4b4b4;
+  font-size: 1.4rem;
+}
+
+.flex-sa {
+  display: flex;
+  text-align: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+}
+
+.mod-item-div {
+  width: 3rem;
+  display: flex;
+  text-align: center;
+  justify-content: space-between;
 }

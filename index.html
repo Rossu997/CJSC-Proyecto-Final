@@ -14,7 +14,8 @@
     <!-- LLAMADO DE FUENTES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap">
 
     <!-- LLAMADO DE ESTILOS -->
     <link rel="stylesheet" href="style.css">
@@ -23,49 +24,83 @@
 
 <body>
     <div class="container">
-        <div id="container-finalizar"></div>
+
+        <div id="container-finalizar">
+        </div>
+
         <nav class="navbar">
-            <h1 id="logo"><a href="#">LOGO 😂</a></h1>
+            <h1 id="logo"><a href="#">L O G O 😂</a></h1>
             <ul class="nav-lista">
                 <li><a class="nav-item" href="#">Muebles</a></li>
                 <li><a class="nav-item" href="#">Nosotros</a></li>
                 <li><a class="nav-item" href="#">Contacto</a></li>
             </ul>
         </nav>
-        <article class="hero-image">
+
+        <section class="hero-image">
             <img src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/posters-in-cozy-apartment-interior-royalty-free-image-943910360-1534189931.jpg"
                 alt="Bajomesada con cuadros.">
-        </article>
+        </section>
+
         <main class="main-div">
+
             <aside class="aside-div">
-                <h1>CARRITO 🛒</h1>
-                <h4 id="carrito-sub">Carrito vacío. ¡Seleccioná productos!</h4>
-                <ul id="carrito-lista"></ul>
-                <div id="container-precio-final"></div>
-                <div id="envios-info" class="envios-info mt-2">
-                    <p>¡Envíos gratis a todo el país!</p>
-                    <p>A partir de $20.000</p>
-                </div>
+                <section>
+                    <h1>CARRITO 🛒<span id="pelotita-cantidad-productos">4</span></h1>
+                    <h4 id="carrito-sub">Carrito vacío. ¡Seleccioná productos!</h4>
+                    <ul id="carrito-lista"></ul>
+                    <div id="container-precio-final"></div>
+                    <div id="envios-info" class="envios-info mt-2">
+                        <p>¡Envíos gratis a todo el país!</p>
+                        <p>A partir de $20.000</p>
+                    </div>
+                </section>
             </aside>
 
-            <div id="container-tarjetas" class="container-tarjetas">
-                <h1>NUESTROS PRODUCTOS 😎</h1>
-            </div>
+            <section class="container-productos">
+                <header class="header-productos">
+                    <h1>NUESTROS PRODUCTOS 😎</h1>
+                    <nav id="nav-productos">
+                        <h4>Filtra los resultados:</h4>
+                        <ul>
+                            <li>Todos los productos</li>
+                            <li>Sillas y Sofás</li>
+                            <li>Línea Hogar</li>
+                            <li>Línea Outdoor</li>
+                            <li>Favoritos</li>
+                        </ul>
+                    </nav>
+                </header>
+
+                <section id="container-tarjetas" class="container-tarjetas">
+                </section>
+            </section>
+
+
         </main>
     </div>
 
 
-    <!-- TEMPLATES -->
+    <!-- TEMPLATE 1 -->
     <template id="template-tarjeta">
         <div class="tarjeta-normal">
             <img src="" alt="">
             <h3></h3>
             <p></p>
-            <p class="tarjeta-precio">$ <span></span></p>
-            <button class="btn-add" type="button">agregar</button>
+            <p class="tarjeta-precio">$<span></span></p>
+            <div class="tag-categoria">
+                <span>Sillones</span>
+            </div>
+            <div class="flex-sa">
+                <button class="btn-add" type="button">Añadir al carrito</button>
+                <button class="btn-fav ml-1" type="button"><i class="fa-solid fa-heart"></i></button>
+                <!-- <button class="btn-fav" type="button"><i class="fa-solid fa-share-nodes"></i></button> -->
+                <!-- <i class="fa-regular fa-heart"></i> -->
+            </div>
         </div>
     </template>
 
+    <!-- TEMPLATE 2 -->
     <template id="template-carrito">
         <li class="carrito-item">
             <p>
@@ -74,25 +109,25 @@
             </p>
             <div>
                 <p>
-                    <span class="ml-1">$</span>
+                    <span>$</span>
                     <span id="carrito-precio-total-item" class="mr-1">Precio * Cantidad del producto</span>
                 </p>
-                <p>
+                <p class="mod-item-div">
                     <span id="carrito-restar-item" class="-">-</span>
                     <span id="carrito-cantidad-item">Cantidad del producto</span>
                     <span id="carrito-sumar-item" class="+">+</span>
                 </p>
             </div>
-
         </li>
     </template>
 
+    <!-- TEMPLATE 3 -->
     <template id="template-precio-final">
         <div class="mt-2">
             <div class="carrito-item">
                 <h4 id="carrito-sub">TOTAL:</h4>
                 <div class="precio-final-compra">
-                    <h4 class="ml-1">$</h4>
+                    <h4>$</h4>
                     <h4 id="precio-final-compra">$0</h4>
                 </div>
             </div>
@@ -114,9 +149,9 @@
                 <p>QUITAR TODOS LOS ARTÍCULOS DEL CARRITO</p>
             </button>
         </div>
-
     </template>
 
+    <!-- TEMPLATE 4 -->
     <template id="template-finalizar">
         <div id="finalizar-bg" class="click-fuera">
             <article id="finalizar-card">
@@ -139,10 +174,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <!-- SWEET ALERT -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- TOASTIFY -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- FONTAWESOME -->
+    <script src="https://kit.fontawesome.com/c4d9c57f3a.js" crossorigin="anonymous"></script>
 
     <!-- LLAMADO DE SCRIPTS -->
     <script src="random-color.js"></script>

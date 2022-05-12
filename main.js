@@ -4,10 +4,6 @@
 
 window.addEventListener('DOMContentLoaded', () => {
 	fetchData()
-	if (localStorage.getItem("carrito")) {
-		carrito = JSON.parse(localStorage.getItem("carrito"))
-		printCarrito()
-	}
 })
 
 const fetchData = async () => {
@@ -19,8 +15,24 @@ const fetchData = async () => {
 	catch (error) {
 		console.log(error);
 	}
+
+	loadStorage()
 }
 
+/**
+ * CARGANDO DATOS GUARDADOS EN EL LOCAL STORAGE
+ */
+
+const loadStorage = () => {
+	if (localStorage.getItem("carrito")) {
+		carrito = JSON.parse(localStorage.getItem("carrito"))
+		printCarrito()
+	}
+	if (localStorage.getItem("favoritos")) {
+		favoritos = JSON.parse(localStorage.getItem("favoritos"))
+		loadFav()
+	}
+}
 
 /**
  * CARGA Y PRINT DE LOS PRODUCTOS TRAIDOS DEL JSON
@@ -33,7 +45,8 @@ const printProductos = productos => {
 		templateTarjeta.querySelector("p").textContent = producto.descripcion
 		templateTarjeta.querySelector("span").textContent = producto.precio
 		templateTarjeta.querySelector("img").setAttribute("src", producto.imagenURL)
-		templateTarjeta.querySelector("button").dataset.id = producto.id
+		templateTarjeta.querySelector(".btn-add").dataset.id = producto.id
+		templateTarjeta.querySelector("i").dataset.id = producto.id
 
 		const clone = templateTarjeta.cloneNode(true)
 		fragment.appendChild(clone)
@@ -69,10 +82,15 @@ const quitarTodo = document.getElementById("btn-quitar-todo")
 
 //Agregar un producto al carrito
 const addProducto = containerTarjetas.addEventListener("click", e => {
-	e.target.classList.contains("btn-add") && setProducto(e.target.parentElement)
+	e.target.classList.contains("btn-add") && setProducto(e.target.parentElement.parentElement)
 	e.stopPropagation()
 })
 
+//Agregar producto a favoritos
+const favProducto = containerTarjetas.addEventListener("click", e => {
+	e.target.classList.contains("fa-heart") && setPushPrintFav(e.target.dataset.id)
+	e.stopPropagation()
+})
 
 //Modificar los productos del carrito
 const modProductosCarrito = containerCarrito.addEventListener("click", e => {
@@ -121,24 +139,55 @@ const finalizarCompra = containerPrecioFinal.addEventListener("click", e => {
 
 
 /**
+ * LISTA DE FAVORITOS [ARRAY de IDs]
+ */
+
+let favoritos = []
+
+//Define, carga y print de favorito
+const setPushPrintFav = id => {
+
+	const thisTarjeta = document.querySelectorAll(".tarjeta-normal")[id - 1]
+
+	if (favoritos.find(ele => ele === id)) {
+		const index = favoritos.findIndex(ele => ele === id)
+		favoritos.splice(index, 1)
+		thisTarjeta.querySelector("i").style.color = "#b4b4b4"
+	}
+	else {
+		favoritos.push(id)
+		thisTarjeta.querySelector("i").style.color = "#f42"
+	}
+
+	localStorage.setItem("favoritos", JSON.stringify(favoritos))
+}
+
+//Print de favoritos guardados ❤
+const loadFav = () => {
+
+	favoritos.forEach(favorito => {
+		const thisTarjeta = document.querySelectorAll(".tarjeta-normal")[favorito - 1]
+		thisTarjeta.querySelector("i").style.color = "#f42"
+	});
+}
+
+
+/**
  * CARRITO {COLECCION DE OBJETOS}
  */
 
 let carrito = {}
 
-
 //Define el producto que se eligio
 const setProducto = ele => {
-
 	const producto = {
 		"id": ele.querySelector(".btn-add").dataset.id,
 		"nombre": ele.querySelector("h3").textContent,
 		"precio": ele.querySelector("span").textContent,
-		"cantidad": 1
+		"cantidad": 1,
 	}
 	pushProducto(producto)
 }
-
 
 //Carga en el carrito el producto
 const pushProducto = producto => {
@@ -150,8 +199,7 @@ const pushProducto = producto => {
 	printCarrito()
 }
 
-
-//Carga y print del carrito
+//Print del carrito
 const printCarrito = () => {
 
 	localStorage.setItem("carrito", JSON.stringify(carrito))
@@ -171,8 +219,21 @@ const printCarrito = () => {
 	})
 	containerCarrito.appendChild(fragment)
 
+	calcularCantidadProductos()
 	estadoCarrito(Object.values(carrito).length)
 	totalCarrito(Object.values(carrito).length)
+}
+
+//Muestra la cantidad total de productos en el carrito
+const calcularCantidadProductos = () => {
+	let cantidadProductos = 0
+
+	Object.values(carrito).forEach(producto => {
+		cantidadProductos += producto.cantidad
+	})
+
+	const pelotitaCantidadProductos = document.getElementById("pelotita-cantidad-productos")
+	pelotitaCantidadProductos.textContent = cantidadProductos
 }
 
 
@@ -191,7 +252,6 @@ const estadoCarrito = lenght => {
 		envioInfo.classList.remove("envios-info")
 	}
 }
-
 
 //Total carrito con texto que cambia dependiendo el contenido
 const totalCarrito = lenght => {
@@ -228,7 +288,7 @@ const calcularEnvio = (precioFinal) => {
 	const enviosInfoIn = templatePrecioFinal.getElementById("envios-info-in")
 
 	if (precioFinal >= 20000) {
-		precioEnvio = "ENVÍO GRATIS 🤑"
+		precioEnvio = "ENVÍO GRATIS"
 		enviosInfoIn.textContent = ""
 		enviosInfoIn.classList.remove("envios-info")
 	} else if (precioFinal > 15000) {
@@ -249,25 +309,45 @@ const calcularEnvio = (precioFinal) => {
 }
 
 
+/**
+ * ALERTAS Y TOASTS
+ */
 
-//Borra todo el contenido del carrito
+//Alerta borrar todos los productos de carrito
 const wipeCarrito = () => {
-	swal({
-		title: "¿Seguro querés borrar todos los productos del carrito?",
+	Swal.fire({
+		title: "¿Querés vaciar el carrito?",
+		text: "Esto no se podrá revertir...",
+		color: "#000000",
 		icon: "warning",
-		buttons: true,
-		dangerMode: true,
+		iconColor: "#f42",
+		showCloseButton: true,
+		stopKeydownPropagation: true,
+
+		confirmButtonText: "Si, eliminar",
+		confirmButtonColor: "#ffe11c",
+
+		showCancelButton: true,
+		cancelButtonText: "Cancelar",
+		cancelButtonColor: "#ddd",
+		focusCancel: true,
 	})
-		.then((willDelete) => {
-			if (willDelete) {
-				swal("Productos eliminados", {
+		.then((result) => {
+			if (result.isConfirmed) {
+				Swal.fire({
+					title: "¡Eliminados!",
+					text: "Tu carrito ahora está vacío",
+					color: "#000000",
 					icon: "success",
-					duration: 2000
-				});
+					iconColor: "#ffe11c",
+					timer: 1500,
+					timerProgressBar: false,
+					showConfirmButton: false,
+				})
 				carrito = {}
 				printCarrito()
 			}
-		});
+		})
 }
 
 
@@ -289,7 +369,11 @@ const toastProductoEliminado = producto => {
 	}).showToast();
 }
 
-//Salir del popup final
+
+/**
+ * Salir del popup final
+ */
+
 const salirFinalizar = () => {
 	containerFinalizar.textContent = ""
 	bodyTag.style.overflow = "auto"
