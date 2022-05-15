@@ -29,11 +29,11 @@
         </div>
 
         <nav class="navbar">
-            <h1 id="logo"><a href="#">L O G O 😂</a></h1>
+            <h1 id="logo"><a href="index.html">L O G O 😂</a></h1>
             <ul class="nav-lista">
-                <li><a class="nav-item" href="#">Muebles</a></li>
-                <li><a class="nav-item" href="#">Nosotros</a></li>
-                <li><a class="nav-item" href="#">Contacto</a></li>
+                <li><a class="nav-item" href="index.html">Muebles</a></li>
+                <li><a class="nav-item" href="index.html">Nosotros</a></li>
+                <li><a class="nav-item" href="index.html">Contacto</a></li>
             </ul>
         </nav>
 
@@ -46,7 +46,7 @@
 
             <aside class="aside-div">
                 <section>
-                    <h1>CARRITO 🛒<span id="pelotita-cantidad-productos">4</span></h1>
+                    <h1>CARRITO 🛒<span id="pelotita-cantidad-productos" class="circulo-amarillo">0</span></h1>
                     <h4 id="carrito-sub">Carrito vacío. ¡Seleccioná productos!</h4>
                     <ul id="carrito-lista"></ul>
                     <div id="container-precio-final"></div>
@@ -58,17 +58,34 @@
             </aside>
 
             <section class="container-productos">
-                <header class="header-productos">
+                <header>
                     <h1>NUESTROS PRODUCTOS 😎</h1>
                     <nav id="nav-productos">
-                        <h4>Filtra los resultados:</h4>
-                        <ul>
-                            <li>Todos los productos</li>
-                            <li>Sillas y Sofás</li>
-                            <li>Línea Hogar</li>
-                            <li>Línea Outdoor</li>
-                            <li>Favoritos</li>
-                        </ul>
+                        <div>
+                            <h4>Categorías</h4>
+                            <ul>
+                                <li>Todos los productos</li>
+                                <li>Sillas y Sofás</li>
+                                <li>Línea Hogar</li>
+                                <li>Línea Outdoor</li>
+                                <li>Favoritos</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>Precio</h4>
+                            <input type="text" placeholder="Mínimo" id="precio-minimo" name="precio-minimo"
+                                class="filtro-precio">
+                            <span>-</span>
+                            <input type="text" placeholder="Máximo" id="precio-maximo" name="precio-maximo"
+                                class="filtro-precio">
+                            <button type="button" class="btn-aplicar-filtro">></button>
+                            <ul class="mt-05">
+                                <li>Hasta $3000</li>
+                                <li>$3000 a $6000</li>
+                                <li>Más de $6000</li>
+                            </ul>
+                        </div>
+                        <button type="button" class="btn-finalizar">REESTABLECER</button>
                     </nav>
                 </header>
 
@@ -84,18 +101,18 @@
     <!-- TEMPLATE 1 -->
     <template id="template-tarjeta">
         <div class="tarjeta-normal">
-            <img src="" alt="">
-            <h3></h3>
-            <p></p>
-            <p class="tarjeta-precio">$<span></span></p>
-            <div class="tag-categoria">
-                <span>Sillones</span>
+            <div>
+                <img src="" alt="">
+                <h3></h3>
+                <p></p>
+                <div class="tag-container mt-1"></div>
             </div>
-            <div class="flex-sa">
-                <button class="btn-add" type="button">Añadir al carrito</button>
-                <button class="btn-fav ml-1" type="button"><i class="fa-solid fa-heart"></i></button>
-                <!-- <button class="btn-fav" type="button"><i class="fa-solid fa-share-nodes"></i></button> -->
-                <!-- <i class="fa-regular fa-heart"></i> -->
+            <div>
+                <p class="tarjeta-precio">$<span id="precio"></span></p>
+                <div class="flex-sa">
+                    <button class="btn-add" type="button">Añadir al carrito</button>
+                    <button class="btn-fav ml-1" type="button"><i class="fa-solid fa-heart"></i></button>
+                </div>
             </div>
         </div>
     </template>
@@ -155,16 +172,17 @@
     <template id="template-finalizar">
         <div id="finalizar-bg" class="click-fuera">
             <article id="finalizar-card">
-                <h1 class="meme">💰</h1>
-                <h1>El precio total de la compra</h1>
-                <h4>$3000</h4>
-                <div id="descuentovich" class="mt-2 bg-amarillo">
-                    <label for="codigo-descuento-ingresado" id="codigo-descuento">Ingresa un codigo de descuento</label>
-                    <input type="text" placeholder="INVIERNO2022" id="codigo-descuento-ingresado"
-                        name="codigo-descuento-ingresado">
-                    <button id="aplicar-descuento" type="button">APLICAR DESCUENTO</button>
+                <h2 class="meme">💰</h2>
+                <h3></h3>
+                <h1></h1>
+                <div id="descuentovich">
+                    <label for="input-descuento" id="codigo-descuento">¿Tenés un código de descuento?</label>
+                    <input type="text" placeholder="TOP10" id="input-descuento"
+                        name="input-descuento" class="filtro-precio ml-1">
+                    <button id="btn-descuento" type="button" class="btn-descuento ml-1">APLICAR</button>
+                    <p></p>
                 </div>
-                <button id="btn-pagar" class="btn-finalizar" type="button">PROCEDER A PAGAR</button>
+                <button id="btn-pagar" type="button">💸 PROCEDER A PAGAR 💸</button>
             </article>
         </div>
     </template>

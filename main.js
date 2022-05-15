@@ -19,6 +19,7 @@ const fetchData = async () => {
 	loadStorage()
 }
 
+
 /**
  * CARGANDO DATOS GUARDADOS EN EL LOCAL STORAGE
  */
@@ -43,7 +44,13 @@ const printProductos = productos => {
 	productos.forEach(producto => {
 		templateTarjeta.querySelector("h3").textContent = producto.nombre
 		templateTarjeta.querySelector("p").textContent = producto.descripcion
-		templateTarjeta.querySelector("span").textContent = producto.precio
+
+		templateTarjeta.querySelector(".tag-container").innerHTML = ""
+		producto.tags.forEach(tag => {
+			templateTarjeta.querySelector(".tag-container").innerHTML += `<span>${tag.toUpperCase()}</span>`
+		})
+
+		templateTarjeta.querySelector("#precio").textContent = producto.precio
 		templateTarjeta.querySelector("img").setAttribute("src", producto.imagenURL)
 		templateTarjeta.querySelector(".btn-add").dataset.id = producto.id
 		templateTarjeta.querySelector("i").dataset.id = producto.id
@@ -82,7 +89,7 @@ const quitarTodo = document.getElementById("btn-quitar-todo")
 
 //Agregar un producto al carrito
 const addProducto = containerTarjetas.addEventListener("click", e => {
-	e.target.classList.contains("btn-add") && setProducto(e.target.parentElement.parentElement)
+	e.target.classList.contains("btn-add") && setProducto(e.target.parentElement.parentElement.parentElement)
 	e.stopPropagation()
 })
 
@@ -118,21 +125,10 @@ const modProductosCarrito = containerCarrito.addEventListener("click", e => {
 	printCarrito()
 })
 
-
 //Total y finalizar la compra
 const finalizarCompra = containerPrecioFinal.addEventListener("click", e => {
 	if (e.target.classList.contains("btn-finalizar")) {
-
-		templateFinalizar.querySelector("h4").textContent = "$chorrocientosmil morlacos"
-		bodyTag.style.overflow = "hidden"
-
-		const clone = templateFinalizar.cloneNode(true)
-		fragment.appendChild(clone)
-		containerFinalizar.appendChild(fragment)
-
-		const auxBg = document.getElementById("finalizar-bg")
-		auxBg.addEventListener("click", e => e.target.classList.contains("click-fuera") && salirFinalizar())
-		document.addEventListener("keydown", e => e.key === "Escape" && salirFinalizar())
+		printFinalizarCompra(precioTotal)
 	}
 	e.stopPropagation()
 })
@@ -183,7 +179,7 @@ const setProducto = ele => {
 	const producto = {
 		"id": ele.querySelector(".btn-add").dataset.id,
 		"nombre": ele.querySelector("h3").textContent,
-		"precio": ele.querySelector("span").textContent,
+		"precio": ele.querySelector("#precio").textContent,
 		"cantidad": 1,
 	}
 	pushProducto(producto)
@@ -196,6 +192,7 @@ const pushProducto = producto => {
 		producto.cantidad = carrito[producto.id].cantidad + 1
 	}
 	carrito[producto.id] = { ...producto }
+	toastProductoAgregado(carrito[producto.id].nombre)
 	printCarrito()
 }
 
@@ -221,8 +218,10 @@ const printCarrito = () => {
 
 	calcularCantidadProductos()
 	estadoCarrito(Object.values(carrito).length)
-	totalCarrito(Object.values(carrito).length)
+	/* totalCarrito(Object.values(carrito).length) */
+	/* calcularFinal(Object.values(carrito).length) */
 }
+
 
 //Muestra la cantidad total de productos en el carrito
 const calcularCantidadProductos = () => {
@@ -239,6 +238,7 @@ const calcularCantidadProductos = () => {
 
 //Cambia información según el estado del carrito
 const estadoCarrito = lenght => {
+	containerPrecioFinal.textContent = "" //<<
 
 	if (lenght === 0) {
 		carritoSub.textContent = "Carrito vacío. ¡Seleccioná productos!"
@@ -250,27 +250,63 @@ const estadoCarrito = lenght => {
 		carritoSub.textContent = "Productos agregados:"
 		envioInfo.textContent = ""
 		envioInfo.classList.remove("envios-info")
+
+		const precioFinal = Object.values(carrito).reduce((acc, { cantidad, precio }) => acc + (cantidad * precio), 0)//<<
+		calcularEnvio(precioFinal) 	//<<
 	}
 }
 
-//Total carrito con texto que cambia dependiendo el contenido
-const totalCarrito = lenght => {
-	containerPrecioFinal.textContent = ""
 
-	if (lenght !== 0) {
+//Calcula el precio del envío y cuánto falta para que sea gratis
+const calcularEnvio = precioFinal => {
+	const enviosInfoIn = templatePrecioFinal.getElementById("envios-info-in")
+	const valorEnvioGratis = 20000
+	let precioEnvio = 0
 
-		const precioFinal = Object.values(carrito).reduce((acc, { cantidad, precio }) => acc + (cantidad * precio), 0)
-		templatePrecioFinal.getElementById("precio-final-compra").textContent = precioFinal
+	if (precioFinal >= valorEnvioGratis) {
+		precioEnvio = "ENVÍO GRATIS"
+		enviosInfoIn.textContent = ""
+		enviosInfoIn.classList.remove("envios-info")
+	} else if (precioFinal > valorEnvioGratis * 0.8) {
+		precioEnvio = 2000
+		enviosInfoIn.innerHTML = `<p>¡Solo faltan $${20000 - precioFinal} para tu envío gratis! 😍</p>`
+		enviosInfoIn.classList.add("envios-info")
+	} else if (precioFinal > valorEnvioGratis * 0.5) {
+		precioEnvio = 1500
+		enviosInfoIn.innerHTML = `<p>Agregando $${20000 - precioFinal} tu envío es sin costo 😏</p>`
+	} else if (precioFinal > valorEnvioGratis * 0.2) {
+		precioEnvio = 1000
+		enviosInfoIn.innerHTML = `<p>¡Necesitar sumar $${20000 - precioFinal} y te regalamos el envío hasta tu casa! 🙄</p>`
+	} else {
+		precioEnvio = 500
+		enviosInfoIn.innerHTML = `<p>Todavía te faltan $${20000 - precioFinal} para tu envío bonificado 😪</p>`
+		enviosInfoIn.classList.add("envios-info")
+	}
 
-		calcularEnvio(precioFinal)
+	printPrecios(precioFinal, precioEnvio)
+}
 
-		templatePrecioFinal.getElementById("precio-envio").innerHTML = precioEnvio
+
+/**
+ * SUMA DE PRECIO FINAL Y PRECIO ENVIO
+ */
+
+ let precioTotal = 0
+
+
+//Imprimir los precios finales en el carrito
+const printPrecios = (precioFinal, precioEnvio) => {
+	templatePrecioFinal.getElementById("precio-final-compra").textContent = precioFinal
+	templatePrecioFinal.getElementById("precio-envio").innerHTML = precioEnvio
+
 		if (precioEnvio === "ENVÍO GRATIS") {
 			templatePrecioFinal.querySelector(".signo-peso").textContent = ""
 			templatePrecioFinal.querySelector(".envio-div").classList.add("bg-amarillo")
+			precioTotal = precioFinal
 		} else {
 			templatePrecioFinal.querySelector(".signo-peso").textContent = "$"
 			templatePrecioFinal.querySelector(".envio-div").classList.remove("bg-amarillo")
+			precioTotal = precioFinal + precioEnvio
 		}
 
 		const clone = templatePrecioFinal.cloneNode(true)
@@ -279,33 +315,97 @@ const totalCarrito = lenght => {
 
 		const quitarTodo = document.getElementById("btn-quitar-todo")
 		quitarTodo.addEventListener("click", e => wipeCarrito(e))
-	}
-
 }
 
-//Calcula el precio del envío y cuánto falta para que sea gratis
-const calcularEnvio = (precioFinal) => {
-	const enviosInfoIn = templatePrecioFinal.getElementById("envios-info-in")
 
-	if (precioFinal >= 20000) {
-		precioEnvio = "ENVÍO GRATIS"
-		enviosInfoIn.textContent = ""
-		enviosInfoIn.classList.remove("envios-info")
-	} else if (precioFinal > 15000) {
-		precioEnvio = 2000
-		enviosInfoIn.innerHTML = `<p>¡Solo faltan $${20000 - precioFinal} para tu envío gratis! 😍</p>`
-		enviosInfoIn.classList.add("envios-info")
-	} else if (precioFinal > 10000) {
-		precioEnvio = 1500
-		enviosInfoIn.innerHTML = `<p>Agregando $${20000 - precioFinal} tu envío es sin costo 😏</p>`
-	} else if (precioFinal > 5000) {
-		precioEnvio = 1000
-		enviosInfoIn.innerHTML = `<p>¡Necesitar sumar $${20000 - precioFinal} y te regalamos el envío hasta tu casa! 🙄</p>`
-	} else {
-		precioEnvio = 500
-		enviosInfoIn.innerHTML = `<p>Todavía te faltan $${20000 - precioFinal} para tu envío bonificado 😪</p>`
-		enviosInfoIn.classList.add("envios-info")
+//Print de popup finalizar compra
+const printFinalizarCompra = precioTotal => {
+
+	//PRINT
+	containerFinalizar.textContent = ""
+
+	templateFinalizar.querySelector("h1").textContent = `VAS A PAGAR $${precioTotal}`
+	bodyTag.style.overflow = "hidden"
+
+	const clone = templateFinalizar.cloneNode(true)
+	fragment.appendChild(clone)
+	containerFinalizar.appendChild(fragment)
+
+	//EVENTOS
+	const inputDescuento = document.getElementById("input-descuento")
+	inputDescuento.addEventListener("keydown", e => {
+		if (e.key === "Enter") {
+			e.preventDefault()
+			aplicarDescuento(inputDescuento.value.toUpperCase())
+		}
+	})
+
+	const btnDescuento = document.getElementById("btn-descuento")
+	btnDescuento.addEventListener("click", () => {
+		aplicarDescuento(inputDescuento.value.toUpperCase())
+	})
+	
+	const btnPagar = document.getElementById("btn-pagar")
+	btnPagar.addEventListener("click", () => {
+		resetApp()
+	})
+	
+
+	//LÓGICA
+	const aplicarDescuento = input => {
+		
+		let precioTotalDescuento = 0
+		const arrayDescuentos = []
+
+		codigosDescuento.forEach(codigo => {arrayDescuentos.push(codigo.code)} )
+		const validacionInput = arrayDescuentos.find(ele => ele === input)
+		const indexDelCodigo = arrayDescuentos.indexOf(validacionInput)
+
+		if (indexDelCodigo !== -1) {
+			precioTotalDescuento = parseInt(precioTotal * codigosDescuento[indexDelCodigo].multiplier)
+			containerFinalizar.querySelector("h1").textContent = `AHORA PAGÁS $${precioTotalDescuento}`
+			containerFinalizar.querySelector("h3").textContent = `IBAS A PAGAR $${precioTotal}`
+			containerFinalizar.querySelector("p").innerHTML = `¡${codigosDescuento[indexDelCodigo].porcentage} de descuento aplicado! 🤯<span>x</span>`
+			containerFinalizar.querySelector("p").classList.remove("error-descuento")
+			containerFinalizar.querySelector("p").classList.add("success-descuento")
+
+		} else {
+			containerFinalizar.querySelector("p").innerHTML = `Código inválido. Intentá con 'TOP10' 😘<span>x</span>`
+			containerFinalizar.querySelector("p").classList.remove("success-descuento")
+			containerFinalizar.querySelector("p").classList.add("error-descuento")
+		}
+
+		//Otro evento...
+		const btnCerrarAlertaDescuento = containerFinalizar.querySelector("span")
+		btnCerrarAlertaDescuento.addEventListener("click", () => {
+			containerFinalizar.querySelector("p").innerHTML = ""
+			containerFinalizar.querySelector("p").className = ""
+		})
 	}
+
+	//CODIGOS DESCUENTOS {Objetos}
+	const codigosDescuento = [
+		{
+			code: "TOP10",
+			porcentage: "25%",
+			multiplier: 0.75
+		},
+		{
+			code: "TOP99",
+			porcentage: "50%",
+			multiplier: 0.50
+		}
+	]
+
+	//SALIR
+	const auxBg = document.getElementById("finalizar-bg")
+	auxBg.addEventListener("click", e => e.target.classList.contains("click-fuera") && salirFinalizar())
+	document.addEventListener("keydown", e => {
+		if (e.key === "Escape") {
+			e.preventDefault()
+			salirFinalizar()
+		}
+	})
 }
 
 
@@ -332,24 +432,42 @@ const wipeCarrito = () => {
 		cancelButtonColor: "#ddd",
 		focusCancel: true,
 	})
-		.then((result) => {
-			if (result.isConfirmed) {
-				Swal.fire({
-					title: "¡Eliminados!",
-					text: "Tu carrito ahora está vacío",
-					color: "#000000",
-					icon: "success",
-					iconColor: "#ffe11c",
-					timer: 1500,
-					timerProgressBar: false,
-					showConfirmButton: false,
-				})
-				carrito = {}
-				printCarrito()
-			}
-		})
+	.then((result) => {
+		if (result.isConfirmed) {
+			Swal.fire({
+				title: "¡Eliminados!",
+				text: "Tu carrito ahora está vacío",
+				color: "#000000",
+				icon: "success",
+				iconColor: "#ffe11c",
+				timer: 1500,
+				timerProgressBar: false,
+				showConfirmButton: false,
+			})
+			carrito = {}
+			printCarrito()
+		}
+	})
 }
 
+//Alerta final REINICIAR LA APP WEB
+const resetApp = () => {
+	Swal.fire({
+		title: "¡GRACIAS POR COMPRAR!",
+		text: "La app va a reiniciarse en breve",
+		color: "#000000",
+		icon: "success",
+		iconColor: "green",
+		timer: 2500,
+		timerProgressBar: true,
+		showConfirmButton: false,
+	})
+	.then((e => {
+		localStorage.removeItem("carrito")
+		localStorage.removeItem("favoritos")
+		window.location.assign("index.html")
+	}))
+}
 
 //Aviso que se elimino el producto del carrito
 const toastProductoEliminado = producto => {
@@ -365,6 +483,25 @@ const toastProductoEliminado = producto => {
 			letterSpacing: "8px",
 			fontWeight: "100",
 			fontSize: "3rem"
+		}
+	}).showToast();
+}
+
+
+//Aviso que se agrego el producto al carrito
+const toastProductoAgregado = producto => {
+	Toastify({
+		text: `${producto} agregado al carrito 🥵🤙`,
+		duration: 2000,
+		gravity: "top",
+		position: "right",
+		stopOnFocus: true,
+		style: {
+			background: "#000000",
+			color: "#ffffff",
+			letterSpacing: "5px",
+			fontWeight: "100",
+			fontSize: "1rem"
 		}
 	}).showToast();
 }

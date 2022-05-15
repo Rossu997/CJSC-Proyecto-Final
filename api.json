@@ -4,90 +4,103 @@
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 1",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 1100
+    "precio": 1100,
+    "tags": ["línea hogar"]
   },
   {
     "id": 2,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 2",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 1550
+    "precio": 1550,
+    "tags": ["línea outdoor", "sillas y sofás"]
   },
   {
     "id": 3,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 3",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 500
+    "precio": 500,
+    "tags": ["línea outdoor"]
   },
   {
     "id": 4,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 4",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 8300
+    "precio": 8300,
+    "tags": ["línea hogar"]
   },
   {
     "id": 5,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 5",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 3100
+    "precio": 3100,
+    "tags": ["línea hogar"]
   },
   {
     "id": 6,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 6",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 2800
+    "precio": 2800,
+    "tags": ["línea hogar"]
   },
   {
     "id": 7,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 7",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 4950
+    "precio": 4950,
+    "tags": ["sillas y sofás", "línea outdoor"]
   },
   {
     "id": 8,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 8",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 3300
+    "precio": 3300,
+    "tags": ["línea hogar"]
   },
   {
     "id": 9,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 9",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 10400
+    "precio": 10400,
+    "tags": ["sillas y sofás"]
   },
   {
     "id": 10,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 10",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 9850
+    "precio": 9850,
+    "tags": ["línea outdoor"]
   },
   {
     "id": 11,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 11",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 6500
+    "precio": 6500,
+    "tags": ["línea outdoor"]
   },
   {
     "id": 12,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 12",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 6900
+    "precio": 6900,
+    "tags": ["sillas y sofás"]
   },
   {
     "id": 13,
     "imagenURL": "https://http2.mlstatic.com/D_NQ_NP_684889-MLA31017658132_062019-O.jpg",
     "nombre": "PRODUCTO 13",
     "descripcion": "Sunt exercitation excepteur nulla adipisicing elit irure voluptate incididunt sunt quis. Esse tempor aliquip eu sit anim excepteur ullamco aliqua ullamco magna ea.",
-    "precio": 7350
+    "precio": 7350,
+    "tags": ["línea hogar"]
   }
 ]
