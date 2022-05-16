@@ -10,7 +10,10 @@ const fetchData = async () => {
 	try {
 		const resp = await fetch("api.json")
 		const data = await resp.json()
-		printProductos(data)
+																											console.log('%cmain.js line:13 < data que saco del JSON: >', 'color: #007acc;', data);
+		/* printProductos(data) */
+		localData = data
+		seleccionaCategorias()
 	}
 	catch (error) {
 		console.log(error);
@@ -31,15 +34,52 @@ const loadStorage = () => {
 	}
 	if (localStorage.getItem("favoritos")) {
 		favoritos = JSON.parse(localStorage.getItem("favoritos"))
-		loadFav()
+		loadFav(favoritos)
 	}
 }
 
+
 /**
- * CARGA Y PRINT DE LOS PRODUCTOS TRAIDOS DEL JSON
+ * FILTRO DE CATEGORIAS
+ */
+
+let localData = []
+
+const seleccionaCategorias = (categoriaSeleccionada = "Todos los productos") => {
+	let filteredData = []
+
+	switch (categoriaSeleccionada) {
+
+		case ("Todos los productos"):
+																									console.log('%cmain.js line:13 < Local Data: >', 'color: #007acc;', localData);
+			printProductos(localData)
+			break
+
+		case ("Favoritos"):
+																									console.log('%cmain.js line:57 < favoritos: >', 'color: #007acc;', favoritos);
+			printProductos(filteredData)
+			break
+
+		default:
+			Object.values(localData).forEach(producto => {
+				let indexOfTag = (producto.tags).indexOf((categoriaSeleccionada).toLocaleLowerCase())
+				if (indexOfTag + 1) {
+					filteredData.push(producto)
+				}
+			})
+																									console.log('%cmain.js line:13 < Filtered Data: >', 'color: #007acc;', filteredData);
+			printProductos(filteredData)
+			break
+	}
+}
+
+
+/**
+ * CARGA Y PRINT DE LOS PRODUCTOS
  */
 
 const printProductos = productos => {
+	containerTarjetas.textContent = ""
 
 	productos.forEach(producto => {
 		templateTarjeta.querySelector("h3").textContent = producto.nombre
@@ -76,6 +116,7 @@ const templatePrecioFinal = document.getElementById("template-precio-final").con
 const containerPrecioFinal = document.getElementById("container-precio-final")
 const templateFinalizar = document.getElementById("template-finalizar").content
 const containerFinalizar = document.getElementById("container-finalizar")
+const containerCategorias = document.getElementById("container-categorias")
 const carritoSub = document.getElementById("carrito-sub")
 const envioInfo = document.getElementById("envios-info")
 const bodyTag = document.querySelector("body")
@@ -96,6 +137,19 @@ const addProducto = containerTarjetas.addEventListener("click", e => {
 //Agregar producto a favoritos
 const favProducto = containerTarjetas.addEventListener("click", e => {
 	e.target.classList.contains("fa-heart") && setPushPrintFav(e.target.dataset.id)
+	e.stopPropagation()
+})
+
+//Filtrar por categorias
+containerCategorias.addEventListener("click", e => {
+	if (e.target.classList.contains("categoria")) {
+	containerCategorias.querySelectorAll("li").forEach(tag => {
+		tag.className = ""
+		tag.classList.add("categoria")
+	})
+	e.target.classList.add("categoria-seleccionada")
+	seleccionaCategorias(e.target.textContent)
+	}
 	e.stopPropagation()
 })
 
@@ -142,7 +196,6 @@ let favoritos = []
 
 //Define, carga y print de favorito
 const setPushPrintFav = id => {
-
 	const thisTarjeta = document.querySelectorAll(".tarjeta-normal")[id - 1]
 
 	if (favoritos.find(ele => ele === id)) {
@@ -159,12 +212,18 @@ const setPushPrintFav = id => {
 }
 
 //Print de favoritos guardados ❤
-const loadFav = () => {
+const loadFav = (favoritos) => {
 
 	favoritos.forEach(favorito => {
 		const thisTarjeta = document.querySelectorAll(".tarjeta-normal")[favorito - 1]
 		thisTarjeta.querySelector("i").style.color = "#f42"
-	});
+	})
+	
+	
+
+	/* favoritos.forEach(favorito => {
+		const thisTarjeta = document.querySelectorAll(".tarjeta-normal").dataset.id
+	}); */
 }
 
 
@@ -504,6 +563,7 @@ const toastProductoAgregado = producto => {
 			fontSize: "1rem"
 		}
 	}).showToast();
+	console.log(carrito)
 }
 
 

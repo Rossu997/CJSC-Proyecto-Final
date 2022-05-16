@@ -148,6 +148,31 @@ input[type="reset"] {
   align-items: center;
 }
 
+#nav-productos li {
+  cursor: pointer;
+  width: fit-content
+}
+
+#nav-productos li:hover {
+  color: #b4b4b4;
+}
+
+.categoria-seleccionada {
+  font-weight: 400;
+  letter-spacing: 2px;
+  padding: 0 5px;
+  border-bottom: solid 1px;
+  border-top: solid 1px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+#container-categorias {
+  width: 22%;
+}
+
+/**/
+
 .container-tarjetas {
   display: flex;
   flex-flow: row wrap;
