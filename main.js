@@ -14,6 +14,7 @@
 }
 
 
+
 /**
  * SIMULANDO BASE DE DATOS CON FETCH DE ARCHIVO JSON
  */
@@ -21,19 +22,19 @@
 window.addEventListener('DOMContentLoaded', () => {
 	fetchData()
 })
-
 const fetchData = async () => {
 	try {
 		const resp = await fetch("api.json")
 		const data = await resp.json()
 		localData = data
 		loadStorage()
-		seleccionaCategorias()
+		seleccionaFiltros()
 	}
 	catch (error) {
 		console.log(error);
 	}
 }
+
 
 
 /**
@@ -43,45 +44,93 @@ const fetchData = async () => {
 let localData = []
 let filteredData = localData
 
-const seleccionaCategorias = (categoriaSeleccionada = "Todos los productos") => {
-	switch (categoriaSeleccionada) {
+const seleccionaFiltros = (filterType = "categoria", filterValue = "Todos los productos") => {
+	
+	switch (filterType) {
 
-		case ("Todos los productos"):
-			filteredData = localData
-			break
+		case ("categoria"):
+			switch (filterValue) {
 
-		case ("Favoritos"):
-			favFilter()
-			break
+				case ("Todos los productos"):
+					filteredData = localData
+					break
 
-		default:
-			catFilter(categoriaSeleccionada)
-			break
+				case ("Favoritos"):
+					favFilter()
+					break
+
+				default:
+					catFilter(filterValue)
+					break
+			}
+			
+		case ("rango-precio"):
+			switch (filterValue) {
+
+				case ("Hasta $3000"):
+					priceFilter(0, 3000)
+					break
+					
+				case ("$3000 a $6000"):
+					priceFilter(3000, 6000)
+					break
+					
+				case ("Más de $6000"):
+					priceFilter(6000, Number.MAX_SAFE_INTEGER)
+					break
+			}
+				
 	}
 	printProductos(filteredData)
 }
 
 //Filtra el localData según los favoritos que tengamos
 const favFilter = () => {
-	filteredData = []
+	/* filteredData = [] */
+	let auxFilteredData = []
 
 	for (let i = 0; i < favoritos.length; i++) {
 		let favoritoId = favoritos[i]
-		filteredData.push(localData[favoritoId - 1])
+		auxFilteredData.push(localData[favoritoId - 1])
 	}
+
+	filteredData = auxFilteredData
+
 }
 
-//Filtra el localData según la categoría que se eligió (No incluye TODOS ni FAVORITOS)
-const catFilter = (categoriaSeleccionada) => {
-	filteredData = []
+//Filtra la data según la categoría que se eligió (No incluye TODOS ni FAVORITOS)
+const catFilter = filterValue => {
+	/* filteredData = [] */
+	let auxFilteredData = []
 	
 	Object.values(localData).forEach(producto => {
-		let indexOfTag = (producto.tags).indexOf((categoriaSeleccionada).toLocaleLowerCase())
-		if (indexOfTag + 1) {
-			filteredData.push(producto)
-		}
+		let indexOfTag = (producto.tags).indexOf((filterValue).toLocaleLowerCase())
+		if (indexOfTag + 1) { auxFilteredData.push(producto) }
 	})
+
+	filteredData = auxFilteredData
+
 }
+
+//Filtra la data según el rango de precios que se eligió
+const priceFilter = (min, max) => {
+	let auxFilteredData = []
+	
+	Object.values(filteredData).forEach(producto => {
+		if (producto.precio > min && producto.precio < max) { auxFilteredData.push(producto) }
+	})
+
+	filteredData = auxFilteredData
+/* 
+
+	console.log("minimo: " + min, "maximo: " + max);
+	console.log(typeof min);
+	console.log(typeof max);
+	console.log(filteredData); */
+
+
+}
+
 
 
 /**
@@ -111,12 +160,12 @@ const printProductos = productos => {
 }
 
 
+
 /**
  * TEMPLATES Y CARGA DE ETIQUETAS HTML PARA MODIFICAR EL DOM
  */
 
 const fragment = document.createDocumentFragment()
-
 const templateTarjeta = document.getElementById("template-tarjeta").content
 const containerTarjetas = document.getElementById("container-tarjetas")
 const templateCarrito = document.getElementById("template-carrito").content
@@ -125,12 +174,14 @@ const templatePrecioFinal = document.getElementById("template-precio-final").con
 const containerPrecioFinal = document.getElementById("container-precio-final")
 const templateFinalizar = document.getElementById("template-finalizar").content
 const containerFinalizar = document.getElementById("container-finalizar")
-const containerCategorias = document.getElementById("container-categorias")
+const containerFiltros = document.getElementById("nav-productos") //Filtro Padre
+const containerCategorias = document.getElementById("container-categorias") //Filtro <<<
+const containerPrecios = document.getElementById("container-precio") //Filtro <<<
 const carritoSub = document.getElementById("carrito-sub")
 const envioInfo = document.getElementById("envios-info")
 const bodyTag = document.querySelector("body")
-
 const quitarTodo = document.getElementById("btn-quitar-todo")
+
 
 
 /**
@@ -149,16 +200,44 @@ const favProducto = containerTarjetas.addEventListener("click", e => {
 	e.stopPropagation()
 })
 
-//Filtrar por categorias
-containerCategorias.addEventListener("click", e => {
-	if (e.target.classList.contains("categoria")) {
-	containerCategorias.querySelectorAll("li").forEach(tag => {
-		tag.className = ""
-		tag.classList.add("categoria")
-	})
-	e.target.classList.add("categoria-seleccionada")
-	seleccionaCategorias(e.target.textContent)
+//Filtros para los productos
+containerFiltros.addEventListener("click", e => {
+	console.log(e.target.classList.value)
+	console.log(e.target.textContent)
+
+	switch (e.target.classList.value) {
+
+		case "categoria":
+			seleccionaFiltros(e.target.classList.value, e.target.textContent)
+			e.target.parentElement.querySelectorAll("li").forEach(li => {
+				li.className = ""
+				li.classList.add("categoria")
+			})
+			e.target.classList.add("categoria-seleccionada")
+			break
+
+		case "rango-precio":
+			seleccionaFiltros(e.target.classList.value, e.target.textContent)
+			e.target.parentElement.querySelectorAll("li").forEach(li => {
+				li.className = ""
+				li.classList.add("rango-precio")
+			})
+			e.target.classList.add("categoria-seleccionada")
+			break
+
+		case "btn-finalizar":
+			containerFiltros.querySelectorAll("#container-categorias li").forEach(li => {
+				li.className = ""
+				li.classList.add("categoria")
+			})
+			containerFiltros.querySelectorAll("#container-precio li").forEach(li => {
+				li.className = ""
+				li.classList.add("rango-precio")
+			})
+			seleccionaFiltros()
+
 	}
+
 	e.stopPropagation()
 })
 
@@ -197,6 +276,7 @@ const finalizarCompra = containerPrecioFinal.addEventListener("click", e => {
 })
 
 
+
 /**
  * LISTA DE FAVORITOS [ARRAY de IDs]
  */
@@ -206,12 +286,15 @@ let favoritos = []
 //Define, carga y print de favorito
 const setPushPrintFav = id => {
 	const allCorazones = containerTarjetas.querySelectorAll(".fa-heart")
-
+	
 	allCorazones.forEach(corazon => {
 		if (favoritos.find(ele => ele === id) && corazon.dataset.id === id) {
 			const index = favoritos.findIndex(ele => ele === id)
 			favoritos.splice(index, 1)
 			corazon.style.color = "#b4b4b4"
+		}
+		else if (favoritos.find(ele => ele === corazon.dataset.id) && corazon.dataset.id !== id) {
+			corazon.style.color = "#f42"
 		}
 		else if (corazon.dataset.id !== id) {
 			corazon.style.color = "#b4b4b4"
@@ -225,25 +308,15 @@ const setPushPrintFav = id => {
 }
 
 //Print de favoritos guardados ❤
-/* const checkFav = producto => Boolean((favoritos.indexOf((producto.id).toString())) + 1) */
-
-
 const checkFav = producto => {
-	if (Boolean((favoritos.indexOf((producto.id).toString())) + 1)) {
+	if ((favoritos.indexOf((producto.id).toString())) + 1) {
 		return "#f42"
 	}
 	else {
 		return "#b4b4b4"
 	}
 }
-	 
 
-/* const checkFav = producto => {
-	const id = (producto.id).toString()
-	const respuesta = favoritos.indexOf(id)
-	const elReturn = Boolean(respuesta + 1)
-return elReturn
-} */
 
 
 /**
@@ -297,7 +370,6 @@ const printCarrito = () => {
 	calcularCantidadProductos()
 	estadoCarrito(Object.values(carrito).length)
 }
-
 
 //Muestra la cantidad total de productos en el carrito
 const calcularCantidadProductos = () => {
@@ -363,12 +435,12 @@ const calcularEnvio = precioFinal => {
 }
 
 
+
 /**
  * SUMA DE PRECIO FINAL Y PRECIO ENVIO
  */
 
  let precioTotal = 0
-
 
 //Imprimir los precios finales en el carrito
 const printPrecios = (precioFinal, precioEnvio) => {
@@ -392,7 +464,6 @@ const printPrecios = (precioFinal, precioEnvio) => {
 		const quitarTodo = document.getElementById("btn-quitar-todo")
 		quitarTodo.addEventListener("click", e => wipeCarrito(e))
 }
-
 
 //Print de popup finalizar compra
 const printFinalizarCompra = precioTotal => {
@@ -483,6 +554,7 @@ const printFinalizarCompra = precioTotal => {
 		}
 	})
 }
+
 
 
 /**
