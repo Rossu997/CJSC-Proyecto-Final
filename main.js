@@ -1,4 +1,20 @@
 /**
+ * CARGANDO DATOS GUARDADOS EN EL LOCAL STORAGE
+ */
+
+ const loadStorage = () => {
+	if (localStorage.getItem("favoritos")) {
+		favoritos = JSON.parse(localStorage.getItem("favoritos"))
+	}
+
+	if (localStorage.getItem("carrito")) {
+		carrito = JSON.parse(localStorage.getItem("carrito"))
+		printCarrito()
+	}
+}
+
+
+/**
  * SIMULANDO BASE DE DATOS CON FETCH DE ARCHIVO JSON
  */
 
@@ -10,67 +26,61 @@ const fetchData = async () => {
 	try {
 		const resp = await fetch("api.json")
 		const data = await resp.json()
-																											console.log('%cmain.js line:13 < data que saco del JSON: >', 'color: #007acc;', data);
-		/* printProductos(data) */
 		localData = data
+		loadStorage()
 		seleccionaCategorias()
 	}
 	catch (error) {
 		console.log(error);
 	}
-
-	loadStorage()
 }
 
 
 /**
- * CARGANDO DATOS GUARDADOS EN EL LOCAL STORAGE
- */
-
-const loadStorage = () => {
-	if (localStorage.getItem("carrito")) {
-		carrito = JSON.parse(localStorage.getItem("carrito"))
-		printCarrito()
-	}
-	if (localStorage.getItem("favoritos")) {
-		favoritos = JSON.parse(localStorage.getItem("favoritos"))
-		loadFav(favoritos)
-	}
-}
-
-
-/**
- * FILTRO DE CATEGORIAS
+ * SELECTOR DE CATEGORIAS
  */
 
 let localData = []
+let filteredData = localData
 
 const seleccionaCategorias = (categoriaSeleccionada = "Todos los productos") => {
-	let filteredData = []
-
 	switch (categoriaSeleccionada) {
 
 		case ("Todos los productos"):
-																									console.log('%cmain.js line:13 < Local Data: >', 'color: #007acc;', localData);
-			printProductos(localData)
+			filteredData = localData
 			break
 
 		case ("Favoritos"):
-																									console.log('%cmain.js line:57 < favoritos: >', 'color: #007acc;', favoritos);
-			printProductos(filteredData)
+			favFilter()
 			break
 
 		default:
-			Object.values(localData).forEach(producto => {
-				let indexOfTag = (producto.tags).indexOf((categoriaSeleccionada).toLocaleLowerCase())
-				if (indexOfTag + 1) {
-					filteredData.push(producto)
-				}
-			})
-																									console.log('%cmain.js line:13 < Filtered Data: >', 'color: #007acc;', filteredData);
-			printProductos(filteredData)
+			catFilter(categoriaSeleccionada)
 			break
 	}
+	printProductos(filteredData)
+}
+
+//Filtra el localData según los favoritos que tengamos
+const favFilter = () => {
+	filteredData = []
+
+	for (let i = 0; i < favoritos.length; i++) {
+		let favoritoId = favoritos[i]
+		filteredData.push(localData[favoritoId - 1])
+	}
+}
+
+//Filtra el localData según la categoría que se eligió (No incluye TODOS ni FAVORITOS)
+const catFilter = (categoriaSeleccionada) => {
+	filteredData = []
+	
+	Object.values(localData).forEach(producto => {
+		let indexOfTag = (producto.tags).indexOf((categoriaSeleccionada).toLocaleLowerCase())
+		if (indexOfTag + 1) {
+			filteredData.push(producto)
+		}
+	})
 }
 
 
@@ -84,16 +94,15 @@ const printProductos = productos => {
 	productos.forEach(producto => {
 		templateTarjeta.querySelector("h3").textContent = producto.nombre
 		templateTarjeta.querySelector("p").textContent = producto.descripcion
-
-		templateTarjeta.querySelector(".tag-container").innerHTML = ""
-		producto.tags.forEach(tag => {
-			templateTarjeta.querySelector(".tag-container").innerHTML += `<span>${tag.toUpperCase()}</span>`
-		})
-
 		templateTarjeta.querySelector("#precio").textContent = producto.precio
 		templateTarjeta.querySelector("img").setAttribute("src", producto.imagenURL)
 		templateTarjeta.querySelector(".btn-add").dataset.id = producto.id
 		templateTarjeta.querySelector("i").dataset.id = producto.id
+		templateTarjeta.querySelector("i").style.color = checkFav(producto)
+		templateTarjeta.querySelector(".tag-container").innerHTML = ""
+		producto.tags.forEach(tag => {
+			templateTarjeta.querySelector(".tag-container").innerHTML += `<span>${tag.toUpperCase()}</span>`
+		})
 
 		const clone = templateTarjeta.cloneNode(true)
 		fragment.appendChild(clone)
@@ -196,35 +205,45 @@ let favoritos = []
 
 //Define, carga y print de favorito
 const setPushPrintFav = id => {
-	const thisTarjeta = document.querySelectorAll(".tarjeta-normal")[id - 1]
+	const allCorazones = containerTarjetas.querySelectorAll(".fa-heart")
 
-	if (favoritos.find(ele => ele === id)) {
-		const index = favoritos.findIndex(ele => ele === id)
-		favoritos.splice(index, 1)
-		thisTarjeta.querySelector("i").style.color = "#b4b4b4"
-	}
-	else {
-		favoritos.push(id)
-		thisTarjeta.querySelector("i").style.color = "#f42"
-	}
-
+	allCorazones.forEach(corazon => {
+		if (favoritos.find(ele => ele === id) && corazon.dataset.id === id) {
+			const index = favoritos.findIndex(ele => ele === id)
+			favoritos.splice(index, 1)
+			corazon.style.color = "#b4b4b4"
+		}
+		else if (corazon.dataset.id !== id) {
+			corazon.style.color = "#b4b4b4"
+		}
+		else {
+			favoritos.push(id)
+			corazon.style.color = "#f42"
+		}
+	})
 	localStorage.setItem("favoritos", JSON.stringify(favoritos))
 }
 
 //Print de favoritos guardados ❤
-const loadFav = (favoritos) => {
+/* const checkFav = producto => Boolean((favoritos.indexOf((producto.id).toString())) + 1) */
 
-	favoritos.forEach(favorito => {
-		const thisTarjeta = document.querySelectorAll(".tarjeta-normal")[favorito - 1]
-		thisTarjeta.querySelector("i").style.color = "#f42"
-	})
-	
-	
 
-	/* favoritos.forEach(favorito => {
-		const thisTarjeta = document.querySelectorAll(".tarjeta-normal").dataset.id
-	}); */
+const checkFav = producto => {
+	if (Boolean((favoritos.indexOf((producto.id).toString())) + 1)) {
+		return "#f42"
+	}
+	else {
+		return "#b4b4b4"
+	}
 }
+	 
+
+/* const checkFav = producto => {
+	const id = (producto.id).toString()
+	const respuesta = favoritos.indexOf(id)
+	const elReturn = Boolean(respuesta + 1)
+return elReturn
+} */
 
 
 /**
@@ -277,8 +296,6 @@ const printCarrito = () => {
 
 	calcularCantidadProductos()
 	estadoCarrito(Object.values(carrito).length)
-	/* totalCarrito(Object.values(carrito).length) */
-	/* calcularFinal(Object.values(carrito).length) */
 }
 
 
